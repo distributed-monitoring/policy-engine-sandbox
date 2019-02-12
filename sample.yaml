@@ -1,0 +1,5 @@
+groups:
+  - name: test1
+    rules:
+      - record: test-rec1
+        expr: query str
