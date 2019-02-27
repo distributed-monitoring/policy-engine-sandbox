@@ -1,4 +1,4 @@
-package main
+package policyexpr
 
 type Parser Peg {
      PolicyExpr
@@ -25,7 +25,7 @@ strings <- ["] < StringChar* > ["] sp { p.AddStr(buffer[begin:end]) }
 
 StringChar <- ![\"\n\\] .
 
-idchar <- [a-z] / [A-Z] / [0-9] / [_] 
+idchar <- [a-z] / [A-Z] / [0-9] / [_] / [.] / [-]
 
 ops
 	<- opeq sp { p.AddOps(ExprEq) }

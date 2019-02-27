@@ -2,8 +2,11 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"github.com/distributed-monitoring/policy-engine-sandbox/policyexpr"
 	"gopkg.in/yaml.v2"
+	"io/ioutil"
+	"log"
+	"os"
 )
 
 var data = `
@@ -27,24 +30,36 @@ groups:
 
 type PolicyYaml struct {
 	Groups []struct {
-		Name string `yaml:"name"`
+		Name       string   `yaml:"name"`
 		Annotation []string `yaml:"annotation"`
-		Rules [] struct {
+		Rules      []struct {
 			Record string `yaml:"record"`
-			Expr string `yaml:"expr"`
+			Expr   string `yaml:"expr"`
 		} `yaml:"rules"`
-		Interval string `yaml:"interval"`
+		Interval     string `yaml:"interval"`
 		LastExecuted string // should be time?
 	} `yaml:"groups"`
 }
 
-func main() {
+func parse_main() PolicyYaml {
+	f, err := os.Open("sample.yaml")
+	if err != nil {
+		fmt.Println("fire open error")
+	}
+	defer f.Close()
+
+	b, err := ioutil.ReadAll(f)
+
 	p := PolicyYaml{}
-    
-        err := yaml.Unmarshal([]byte(policy_data1), &p)
-        if err != nil {
-                log.Fatalf("error: %v", err)
-        }
-        fmt.Printf("--- t:\n%v\n\n", p)
-    
+
+	err = yaml.Unmarshal(b, &p)
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	fmt.Printf("--- t:\n%v\n\n", p)
+
+	for _, rule := range p.Groups[0].Rules {
+		policyexpr.Policyexpr_main(rule.Expr)
+	}
+	return p
 }

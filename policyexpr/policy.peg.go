@@ -1,4 +1,4 @@
-package main
+package policyexpr
 
 //go:generate peg policy.peg
 
@@ -633,7 +633,7 @@ func (p *Parser) Init() {
 			position, tokenIndex = position27, tokenIndex27
 			return false
 		},
-		/* 8 idchar <- <([a-z] / [A-Z] / [0-9] / '_')> */
+		/* 8 idchar <- <([a-z] / [A-Z] / [0-9] / '_' / '.' / '-')> */
 		func() bool {
 			position33, tokenIndex33 := position, tokenIndex
 			{
@@ -662,6 +662,20 @@ func (p *Parser) Init() {
 				l38:
 					position, tokenIndex = position35, tokenIndex35
 					if buffer[position] != rune('_') {
+						goto l39
+					}
+					position++
+					goto l35
+				l39:
+					position, tokenIndex = position35, tokenIndex35
+					if buffer[position] != rune('.') {
+						goto l40
+					}
+					position++
+					goto l35
+				l40:
+					position, tokenIndex = position35, tokenIndex35
+					if buffer[position] != rune('-') {
 						goto l33
 					}
 					position++
@@ -676,115 +690,95 @@ func (p *Parser) Init() {
 		},
 		/* 9 ops <- <((opeq sp Action3) / (opne sp Action4) / (ople sp Action5) / (opge sp Action6) / (oplt sp Action7) / (opgt sp Action8))> */
 		func() bool {
-			position39, tokenIndex39 := position, tokenIndex
+			position41, tokenIndex41 := position, tokenIndex
 			{
-				position40 := position
+				position42 := position
 				{
-					position41, tokenIndex41 := position, tokenIndex
+					position43, tokenIndex43 := position, tokenIndex
 					if !_rules[ruleopeq]() {
-						goto l42
+						goto l44
 					}
 					if !_rules[rulesp]() {
-						goto l42
+						goto l44
 					}
 					if !_rules[ruleAction3]() {
-						goto l42
+						goto l44
 					}
-					goto l41
-				l42:
-					position, tokenIndex = position41, tokenIndex41
+					goto l43
+				l44:
+					position, tokenIndex = position43, tokenIndex43
 					if !_rules[ruleopne]() {
-						goto l43
+						goto l45
 					}
 					if !_rules[rulesp]() {
-						goto l43
+						goto l45
 					}
 					if !_rules[ruleAction4]() {
-						goto l43
+						goto l45
 					}
-					goto l41
-				l43:
-					position, tokenIndex = position41, tokenIndex41
+					goto l43
+				l45:
+					position, tokenIndex = position43, tokenIndex43
 					if !_rules[ruleople]() {
-						goto l44
+						goto l46
 					}
 					if !_rules[rulesp]() {
-						goto l44
+						goto l46
 					}
 					if !_rules[ruleAction5]() {
-						goto l44
+						goto l46
 					}
-					goto l41
-				l44:
-					position, tokenIndex = position41, tokenIndex41
+					goto l43
+				l46:
+					position, tokenIndex = position43, tokenIndex43
 					if !_rules[ruleopge]() {
-						goto l45
+						goto l47
 					}
 					if !_rules[rulesp]() {
-						goto l45
+						goto l47
 					}
 					if !_rules[ruleAction6]() {
-						goto l45
+						goto l47
 					}
-					goto l41
-				l45:
-					position, tokenIndex = position41, tokenIndex41
+					goto l43
+				l47:
+					position, tokenIndex = position43, tokenIndex43
 					if !_rules[ruleoplt]() {
-						goto l46
+						goto l48
 					}
 					if !_rules[rulesp]() {
-						goto l46
+						goto l48
 					}
 					if !_rules[ruleAction7]() {
-						goto l46
+						goto l48
 					}
-					goto l41
-				l46:
-					position, tokenIndex = position41, tokenIndex41
+					goto l43
+				l48:
+					position, tokenIndex = position43, tokenIndex43
 					if !_rules[ruleopgt]() {
-						goto l39
+						goto l41
 					}
 					if !_rules[rulesp]() {
-						goto l39
+						goto l41
 					}
 					if !_rules[ruleAction8]() {
-						goto l39
+						goto l41
 					}
 				}
-			l41:
-				add(ruleops, position40)
+			l43:
+				add(ruleops, position42)
 			}
 			return true
-		l39:
-			position, tokenIndex = position39, tokenIndex39
+		l41:
+			position, tokenIndex = position41, tokenIndex41
 			return false
 		},
 		/* 10 opeq <- <('=' '=')> */
 		func() bool {
-			position47, tokenIndex47 := position, tokenIndex
-			{
-				position48 := position
-				if buffer[position] != rune('=') {
-					goto l47
-				}
-				position++
-				if buffer[position] != rune('=') {
-					goto l47
-				}
-				position++
-				add(ruleopeq, position48)
-			}
-			return true
-		l47:
-			position, tokenIndex = position47, tokenIndex47
-			return false
-		},
-		/* 11 opne <- <('!' '=')> */
-		func() bool {
 			position49, tokenIndex49 := position, tokenIndex
 			{
 				position50 := position
-				if buffer[position] != rune('!') {
+				if buffer[position] != rune('=') {
 					goto l49
 				}
 				position++
@@ -792,19 +786,19 @@ func (p *Parser) Init() {
 					goto l49
 				}
 				position++
-				add(ruleopne, position50)
+				add(ruleopeq, position50)
 			}
 			return true
 		l49:
 			position, tokenIndex = position49, tokenIndex49
 			return false
 		},
-		/* 12 ople <- <('<' '=')> */
+		/* 11 opne <- <('!' '=')> */
 		func() bool {
 			position51, tokenIndex51 := position, tokenIndex
 			{
 				position52 := position
-				if buffer[position] != rune('<') {
+				if buffer[position] != rune('!') {
 					goto l51
 				}
 				position++
@@ -812,88 +806,108 @@ func (p *Parser) Init() {
 					goto l51
 				}
 				position++
-				add(ruleople, position52)
+				add(ruleopne, position52)
 			}
 			return true
 		l51:
 			position, tokenIndex = position51, tokenIndex51
 			return false
 		},
-		/* 13 opge <- <'='> */
+		/* 12 ople <- <('<' '=')> */
 		func() bool {
 			position53, tokenIndex53 := position, tokenIndex
 			{
 				position54 := position
+				if buffer[position] != rune('<') {
+					goto l53
+				}
+				position++
 				if buffer[position] != rune('=') {
 					goto l53
 				}
 				position++
-				add(ruleopge, position54)
+				add(ruleople, position54)
 			}
 			return true
 		l53:
 			position, tokenIndex = position53, tokenIndex53
 			return false
 		},
-		/* 14 oplt <- <'<'> */
+		/* 13 opge <- <'='> */
 		func() bool {
 			position55, tokenIndex55 := position, tokenIndex
 			{
 				position56 := position
-				if buffer[position] != rune('<') {
+				if buffer[position] != rune('=') {
 					goto l55
 				}
 				position++
-				add(ruleoplt, position56)
+				add(ruleopge, position56)
 			}
 			return true
 		l55:
 			position, tokenIndex = position55, tokenIndex55
 			return false
 		},
-		/* 15 opgt <- <'>'> */
+		/* 14 oplt <- <'<'> */
 		func() bool {
 			position57, tokenIndex57 := position, tokenIndex
 			{
 				position58 := position
-				if buffer[position] != rune('>') {
+				if buffer[position] != rune('<') {
 					goto l57
 				}
 				position++
-				add(ruleopgt, position58)
+				add(ruleoplt, position58)
 			}
 			return true
 		l57:
 			position, tokenIndex = position57, tokenIndex57
 			return false
 		},
+		/* 15 opgt <- <'>'> */
+		func() bool {
+			position59, tokenIndex59 := position, tokenIndex
+			{
+				position60 := position
+				if buffer[position] != rune('>') {
+					goto l59
+				}
+				position++
+				add(ruleopgt, position60)
+			}
+			return true
+		l59:
+			position, tokenIndex = position59, tokenIndex59
+			return false
+		},
 		/* 16 sp <- <(' ' / '\t')*> */
 		func() bool {
 			{
-				position60 := position
-			l61:
+				position62 := position
+			l63:
 				{
-					position62, tokenIndex62 := position, tokenIndex
+					position64, tokenIndex64 := position, tokenIndex
 					{
-						position63, tokenIndex63 := position, tokenIndex
+						position65, tokenIndex65 := position, tokenIndex
 						if buffer[position] != rune(' ') {
+							goto l66
+						}
+						position++
+						goto l65
+					l66:
+						position, tokenIndex = position65, tokenIndex65
+						if buffer[position] != rune('\t') {
 							goto l64
 						}
 						position++
-						goto l63
-					l64:
-						position, tokenIndex = position63, tokenIndex63
-						if buffer[position] != rune('\t') {
-							goto l62
-						}
-						position++
 					}
-				l63:
-					goto l61
-				l62:
-					position, tokenIndex = position62, tokenIndex62
+				l65:
+					goto l63
+				l64:
+					position, tokenIndex = position64, tokenIndex64
 				}
-				add(rulesp, position60)
+				add(rulesp, position62)
 			}
 			return true
 		},

@@ -1,4 +1,4 @@
-package main
+package policyexpr
 
 import (
 	"fmt"
@@ -6,6 +6,7 @@ import (
 )
 
 type ExprTypes int
+
 const (
 	ExprNone ExprTypes = iota
 	ExprNum
@@ -18,23 +19,23 @@ const (
 	ExprLt
 	ExprGt
 )
-	
+
 type ExprSymbol struct {
-	Types ExprTypes
+	Types   ExprTypes
 	ExprNum string
 	ExprVar string
 	ExprStr string
 }
 
 type ExprCond struct {
-	Left *ExprSymbol
-	Ops ExprTypes
+	Left  *ExprSymbol
+	Ops   ExprTypes
 	Right *ExprSymbol
 }
 
 type PolicyExpr struct {
-	Left *ExprSymbol
-	Ops ExprTypes
+	Left  *ExprSymbol
+	Ops   ExprTypes
 	Right *ExprSymbol
 }
 
@@ -49,12 +50,12 @@ func (p *PolicyExpr) AddOps(ops ExprTypes) {
 func (p *PolicyExpr) AddNum(s string) {
 	if p.Left == nil {
 		p.Left = &ExprSymbol{
-			Types: ExprNum,
+			Types:   ExprNum,
 			ExprNum: s,
 		}
 	} else if p.Right == nil {
 		p.Right = &ExprSymbol{
-			Types: ExprNum,
+			Types:   ExprNum,
 			ExprNum: s,
 		}
 	} else {
@@ -65,12 +66,12 @@ func (p *PolicyExpr) AddNum(s string) {
 func (p *PolicyExpr) AddVar(s string) {
 	if p.Left == nil {
 		p.Left = &ExprSymbol{
-			Types: ExprVar,
+			Types:   ExprVar,
 			ExprVar: s,
 		}
 	} else if p.Right == nil {
 		p.Right = &ExprSymbol{
-			Types: ExprVar,
+			Types:   ExprVar,
 			ExprVar: s,
 		}
 	} else {
@@ -81,12 +82,12 @@ func (p *PolicyExpr) AddVar(s string) {
 func (p *PolicyExpr) AddStr(s string) {
 	if p.Left == nil {
 		p.Left = &ExprSymbol{
-			Types: ExprStr,
+			Types:   ExprStr,
 			ExprNum: s,
 		}
 	} else if p.Right == nil {
 		p.Right = &ExprSymbol{
-			Types: ExprStr,
+			Types:   ExprStr,
 			ExprNum: s,
 		}
 	} else {
@@ -121,7 +122,7 @@ func (t *ExprTypes) Print() {
 	case ExprLt:
 		ops_symbol = "<"
 	case ExprGt:
-		ops_symbol = "<"
+		ops_symbol = ">"
 	}
 	fmt.Printf(" %s ", ops_symbol)
 }
@@ -132,18 +133,19 @@ func (policy *PolicyExpr) PrintPolicy() {
 	policy.Right.Print()
 }
 
-func main() {
-	parser := &Parser{Buffer: "opsvar == 10"}
+func Policyexpr_main(expr_val string) *Parser {
+	fmt.Printf("Text of expr: %s\n", expr_val)
+	parser := &Parser{Buffer: expr_val}
 	parser.Init()
 
 	err := parser.Parse()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v", err)
-		return
+		return nil
 	}
 
 	parser.Execute()
 	parser.PrintPolicy()
 	fmt.Printf("\ndone!\n")
-	return
+	return parser
 }

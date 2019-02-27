@@ -1,5 +1,11 @@
 groups:
   - name: test1
+    annotation: ["label1", "label2"]
+    interval: 10ms #とかなのかなぁ…？
     rules:
       - record: test-rec1
-        expr: query str
+        expr: vm.if_octets.rx < 10
+      - record: test-rec1
+        expr: vm.if_octets.tx < 10
+      - record: test-rec1
+        expr: vm.memory-total < 10
