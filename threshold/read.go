@@ -81,8 +81,6 @@ func Read(p *policyexpr.Parser) []rawData {
 		index = 0
 	}
 
-	fmt.Printf("debug: %#v\n", redisKey)
-
 	keys, err := client.Keys("*" + redisKey + "*").Result()
 	if err != nil {
 		panic(err)
@@ -101,6 +99,5 @@ func Read(p *policyexpr.Parser) []rawData {
 		}
 	}
 
-	fmt.Printf("debug: %#v\n", rdlist)
 	return rdlist
 }

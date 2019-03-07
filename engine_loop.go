@@ -18,12 +18,14 @@ import (
 
 func policyProcess(p PolicyYaml) error {
 	for _, g := range p.Groups {
-		for _, r := range g.Rules {
+		for i, r := range g.Rules {
 			expr := policyexpr.Policyexpr_main(r.Expr)
-			_ = threshold.Read(expr)
-			//resultlist = threshold.Evaluate(expr, rawlist)
+			rdlist := threshold.Read(expr)
+			rllist := threshold.Evaluate(expr, rdlist)
+			fmt.Printf("transmit: %s[%d], %+v\n", g.Name, i, rllist)
 		}
 	}
+	fmt.Printf("\n")
 	return nil
 }
 
