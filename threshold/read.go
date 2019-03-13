@@ -60,13 +60,13 @@ func zrangebyscore(client *redis.Client, key string, index int) []float64 {
 	return datalist
 }
 
-func Read(p *policyexpr.Parser) []rawData {
-	client := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "",
-		DB:       0,
-	})
+var client = redis.NewClient(&redis.Options{
+	Addr:     "localhost:6379",
+	Password: "",
+	DB:       0,
+})
 
+func Read(p *policyexpr.Parser) []rawData {
 	field := p.Left.ExprVar
 	redisKey := strings.Replace(field, "vm.", "virt/", 1)
 
