@@ -9,3 +9,5 @@ groups:
         expr: vm.if_octets.tx < 10
       - record: test-rec1
         expr: vm.memory-total < 10
+      - record: test-rec1
+        expr: vm.memory-total > 50

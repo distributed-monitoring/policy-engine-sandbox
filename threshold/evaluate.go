@@ -26,27 +26,47 @@ func compareFalse(_ []float64, _ float64) bool {
 }
 
 func compareEq(list []float64, val float64) bool {
-	return true
+	return false
 }
 
 func compareNe(list []float64, val float64) bool {
-	return true
+	return false
 }
 
 func compareLe(list []float64, val float64) bool {
-	return true
+	for _, el := range list {
+		if el <= val {
+			return true
+		}
+	}
+	return false
 }
 
 func compareGe(list []float64, val float64) bool {
-	return true
+	for _, el := range list {
+		if el >= val {
+			return true
+		}
+	}
+	return false
 }
 
 func compareLt(list []float64, val float64) bool {
-	return true
+	for _, el := range list {
+		if el < val {
+			return true
+		}
+	}
+	return false
 }
 
 func compareGt(list []float64, val float64) bool {
-	return true
+	for _, el := range list {
+		if el > val {
+			return true
+		}
+	}
+	return false
 }
 
 func Evaluate(p *policyexpr.Parser, rdlist []rawData) []ResourceLabel {
