@@ -1,0 +1,58 @@
+package parser
+
+type Parser Peg {
+     PolicyExpr
+}
+
+root <- sp expression !.
+
+# XXX: check eval seq... (left to right, and/or...)
+#expression <- condition (boolsym condition)*
+expression <- condition
+
+condition <- symbol ops symbol
+
+symbol
+	<- numbers sp 
+	 / strings sp 
+	 / variables sp
+
+numbers <- < [0-9]+ > { p.AddNum(buffer[begin:end]) }
+
+variables <- < idchar* > { p.AddVar(buffer[begin:end]) }
+
+strings <- ["] < StringChar* > ["] sp { p.AddStr(buffer[begin:end]) }
+
+StringChar <- ![\"\n\\] .
+
+idchar <- [a-z] / [A-Z] / [0-9] / [_] / [.] / [-]
+
+ops
+	<- opeq sp { p.AddOps(ExprEq) }
+	 / opne sp { p.AddOps(ExprNe) }
+	 / ople sp { p.AddOps(ExprLe) }
+	 / opge sp { p.AddOps(ExprGe) }
+	 / oplt sp { p.AddOps(ExprLt) }
+	 / opgt sp { p.AddOps(ExprGt) }
+
+opeq <- '=='
+
+opne <- '!='
+
+ople <- '<='
+
+opge <- '=' 
+
+oplt <- '<' 
+
+opgt <- '>' 
+
+#boolsym
+#	<- land sp 
+#	 / lor sp 
+
+#land <- '&&'
+
+#lor <- '||'
+
+sp <- ( ' ' / '\t' )*
