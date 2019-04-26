@@ -8,11 +8,11 @@ test policy-engine-sandbox
 - build
 ::
 
-  # go build
+  # ./build.sh
 
 - edit sample.yaml
 
 - execute following
 ::
 
-  # ./policy-engine-sandbox
+  # ./bin/policyengine
