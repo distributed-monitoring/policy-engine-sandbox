@@ -13,7 +13,6 @@ if [ ! -h gopath/src/${REPO_PATH} ]; then
 	ln -s ../../../.. gopath/src/${REPO_PATH} || exit 255
 fi
 
-export GO15VENDOREXPERIMENT=1
 export GOPATH=${PWD}/gopath
 
 mkdir -p "${PWD}/bin"
